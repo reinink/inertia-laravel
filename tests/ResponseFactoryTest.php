@@ -146,7 +146,7 @@ class ResponseFactoryTest extends TestCase
         ]);
     }
 
-    public function test_shared_data_can_resolve_closures_arguments(): void
+    public function test_shared_data_can_resolve_closure_arguments(): void
     {
         Inertia::share('query', fn (HttpRequest $request) => $request->query());
 
