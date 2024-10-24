@@ -148,7 +148,7 @@ class ResponseFactoryTest extends TestCase
 
     public function test_shared_data_can_resolve_closures_arguments(): void
     {
-        Inertia::share('query', fn(HttpRequest $request) => $request->query());
+        Inertia::share('query', fn (HttpRequest $request) => $request->query());
 
         Route::middleware([StartSession::class, ExampleMiddleware::class])->get('/', function () {
             return Inertia::render('User/Edit');
@@ -200,7 +200,7 @@ class ResponseFactoryTest extends TestCase
     public function test_dot_props_with_callbacks_are_merged_from_shared(): void
     {
         Route::middleware([StartSession::class, ExampleMiddleware::class])->get('/', function () {
-            Inertia::share('auth.user', fn() => [
+            Inertia::share('auth.user', fn () => [
                 'name' => 'Jonathan',
             ]);
 
