@@ -325,4 +325,46 @@ class ResponseFactoryTest extends TestCase
         $response->assertSuccessful();
         $response->assertJsonMissingPath('props.partial');
     }
+
+    public function test_shared_data_can_resolve_closure_arguments(): void
+    {
+        Inertia::share('query', fn (HttpRequest $request) => $request->query());
+
+        Route::middleware([StartSession::class, ExampleMiddleware::class])->get('/', function () {
+            return Inertia::render('User/Edit');
+        });
+
+        $response = $this->withoutExceptionHandling()->get('/?foo=bar', ['X-Inertia' => 'true']);
+
+        $response->assertSuccessful();
+        $response->assertJson([
+            'component' => 'User/Edit',
+            'props' => [
+                'query' => [
+                    'foo' => 'bar',
+                ],
+            ],
+        ]);
+    }
+
+    public function test_optional_props_can_resolve_closure_arguments(): void
+    {
+        Route::middleware([StartSession::class, ExampleMiddleware::class])->get('/', function () {
+            return Inertia::render('User/Edit', [
+                'query' => fn (HttpRequest $request) => $request->query(),
+            ]);
+        });
+
+        $response = $this->withoutExceptionHandling()->get('/?foo=bar', ['X-Inertia' => 'true']);
+
+        $response->assertSuccessful();
+        $response->assertJson([
+            'component' => 'User/Edit',
+            'props' => [
+                'query' => [
+                    'foo' => 'bar',
+                ],
+            ],
+        ]);
+    }
 }
