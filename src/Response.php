@@ -141,8 +141,6 @@ class Response implements Responsable
             });
         }
 
-        $props = $this->resolveArrayableProperties($props, $request);
-
         if ($isPartial && $request->hasHeader(Header::PARTIAL_ONLY)) {
             $props = $this->resolveOnly($request, $props);
         }
@@ -154,6 +152,8 @@ class Response implements Responsable
         $props = $this->resolveAlways($props);
 
         $props = $this->resolvePropertyInstances($props, $request);
+
+        $props = $this->resolveArrayableProperties($props, $request);
 
         return $props;
     }
@@ -170,10 +170,6 @@ class Response implements Responsable
 
             if (is_array($value)) {
                 $value = $this->resolveArrayableProperties($value, $request, false);
-            }
-
-            if ($value instanceof Closure) {
-                $value = $value();
             }
 
             if ($unpackDotProps && str_contains($key, '.')) {

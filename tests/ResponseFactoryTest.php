@@ -311,4 +311,18 @@ class ResponseFactoryTest extends TestCase
             ],
         ]);
     }
+
+    public function test_it_does_not_evaluate_closures_on_partial_reloads(): void
+    {
+        Route::middleware([StartSession::class, ExampleMiddleware::class])->get('/', function () {
+            return Inertia::render('User/Edit', [
+                'partial' => fn() => throw new \Exception('I should never be called!'),
+            ]);
+        });
+
+        $response = $this->withoutExceptionHandling()->get('/', ['X-Inertia' => 'true', 'X-Inertia-Partial-Component' => 'User/Edit', 'X-Inertia-Partial-Except' => ['partial']]);
+
+        $response->assertSuccessful();
+        $response->assertJsonMissingPath('props.partial');
+    }
 }
