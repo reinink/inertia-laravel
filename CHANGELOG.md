@@ -1,8 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/inertiajs/inertia-laravel/compare/v1.3.0...1.x)
+## [Unreleased](https://github.com/inertiajs/inertia-laravel/compare/v1.3.1...1.x)
 
 - Nothing yet!
+
+## [v1.3.1](https://github.com/inertiajs/inertia-laravel/compare/v1.3.0...v1.3.1) - 2024-11-14
+
+* [1.x] Supports PHP 8.4 by [@crynobone](https://github.com/crynobone) in https://github.com/inertiajs/inertia-laravel/pull/683
 
 ## [v1.3.0](https://github.com/inertiajs/inertia-laravel/compare/v1.2.0...v1.3.0) - 2024-06-12
 
