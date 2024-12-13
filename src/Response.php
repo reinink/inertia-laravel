@@ -310,13 +310,31 @@ class Response implements Responsable
             })
             ->filter(function ($prop) {
                 return $prop->shouldMerge();
+            });
+
+        $deepMergeProps = $mergeProps
+            ->filter(function ($prop) {
+                return $prop->shouldDeepMerge();
             })
             ->filter(function ($prop, $key) use ($resetProps) {
                 return ! $resetProps->contains($key);
             })
             ->keys();
 
-        return $mergeProps->isNotEmpty() ? ['mergeProps' => $mergeProps->toArray()] : [];
+        $mergeProps = $mergeProps
+            ->filter(function ($prop) {
+                return !$prop->shouldDeepMerge();
+            })
+            ->filter(function ($prop, $key) use ($resetProps) {
+                return ! $resetProps->contains($key);
+            })
+            ->keys();
+
+        $props = [];
+        if ($mergeProps->isNotEmpty()) $props['mergeProps'] = $mergeProps->toArray();
+        if ($deepMergeProps->isNotEmpty()) $props['deepMergeProps'] = $deepMergeProps->toArray();
+
+        return $props;
     }
 
     public function resolveDeferredProps(Request $request): array
