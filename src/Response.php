@@ -36,6 +36,8 @@ class Response implements Responsable
 
     protected $viewData = [];
 
+    protected array $responseHeaders = [];
+
     protected $cacheFor = [];
 
     /**
@@ -83,6 +85,22 @@ class Response implements Responsable
         return $this;
     }
 
+    public function withHeader(string $key, string $value): static
+    {
+        $this->responseHeaders[$key] = $value;
+
+        return $this;
+    }
+
+    public function withHeaders(array $headers): static
+    {
+        $this->responseHeaders = array_unique(
+            array_merge($this->responseHeaders, $headers),
+        );
+
+        return $this;
+    }
+
     public function rootView(string $rootView): self
     {
         $this->rootView = $rootView;
@@ -122,10 +140,14 @@ class Response implements Responsable
         );
 
         if ($request->header(Header::INERTIA)) {
-            return new JsonResponse($page, 200, [Header::INERTIA => 'true']);
+            return new JsonResponse($page, 200, [
+                Header::INERTIA => 'true',
+                ...$this->responseHeaders,
+            ]);
         }
 
-        return ResponseFactory::view($this->rootView, $this->viewData + ['page' => $page]);
+        return ResponseFactory::view($this->rootView, $this->viewData + ['page' => $page])
+            ->withHeaders($this->responseHeaders);
     }
 
     /**
