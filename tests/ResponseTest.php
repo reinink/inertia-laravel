@@ -726,4 +726,30 @@ class ResponseTest extends TestCase
 
         $this->assertSame('/subpath/product/123', $page->url);
     }
+
+    public function test_headers_can_be_chained_to_response(): void
+    {
+        $request = Request::create('/user/123', 'GET');
+        $request->headers->add(['X-Inertia' => 'true']);
+
+        $user = ['name' => 'Jonathan'];
+        $response = new Response('User/Edit', ['user' => $user], 'app', '123');
+        $time = now()->timestamp;
+        $response->withHeader('X-Session-Time', $time);
+
+        $version = 'v1';
+        $limit = 100;
+
+        $response->withHeaders([
+            'X-Version' => $version,
+            'X-Rate-Limit-Limit' => $limit,
+        ]);
+
+        $response = $response->toResponse($request);
+
+        $this->assertSame((string) $time, $response->headers->get('X-Session-Time'));
+        $this->assertSame($version, $response->headers->get('X-Version'));
+        $this->assertSame((string) $limit, $response->headers->get('X-Rate-Limit-Limit'));
+    }
+
 }
