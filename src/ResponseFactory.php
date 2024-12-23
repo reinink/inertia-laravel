@@ -150,11 +150,16 @@ class ResponseFactory
 
     /**
      * @param  string|SymfonyRedirect  $url
+     * @param  array<string, string>  $headers
      */
-    public function location($url): SymfonyResponse
+    public function location($url, array $headers = []): SymfonyResponse
     {
         if (Request::inertia()) {
-            return BaseResponse::make('', 409, [Header::LOCATION => $url instanceof SymfonyRedirect ? $url->getTargetUrl() : $url]);
+            return BaseResponse::make(
+                '',
+                409,
+                array_merge($headers, ['X-Inertia-Location' => $url instanceof SymfonyRedirect ? $url->getTargetUrl() : $url])
+            );
         }
 
         return $url instanceof SymfonyRedirect ? $url : Redirect::away($url);

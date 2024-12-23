@@ -106,6 +106,21 @@ class ResponseFactoryTest extends TestCase
         $this->assertSame($response, $redirect);
     }
 
+    public function test_location_accepts_additional_headers_and_returns_them_in_response(): void
+    {
+        Request::macro('inertia', function () {
+            return true;
+        });
+
+        $response = (new ResponseFactory)->location('https://inertiajs.com', [
+            'X-Robots-Tag' => 'noindex, nofollow',
+        ]);
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertEquals(Response::HTTP_CONFLICT, $response->getStatusCode());
+        $this->assertEquals('noindex, nofollow', $response->headers->get('X-Robots-Tag'));
+    }
+
     public function test_the_version_can_be_a_closure(): void
     {
         Route::middleware([StartSession::class, ExampleMiddleware::class])->get('/', function () {
