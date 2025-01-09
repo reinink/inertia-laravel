@@ -267,7 +267,10 @@ class Response implements Responsable
                 $value = $value->wait();
             }
 
-            if ($value instanceof ResourceResponse || $value instanceof JsonResource) {
+            if ($value instanceof ResourceResponse
+                || $value instanceof JsonResource
+                || (is_object($value) && method_exists($value, 'toResponse'))
+            ) {
                 $value = $value->toResponse($request)->getData(true);
             }
 
