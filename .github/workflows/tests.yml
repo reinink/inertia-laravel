@@ -41,8 +41,8 @@ jobs:
             laravel: 11
           - php: 7.4
             laravel: 12
-          # - php: '8.0'
-          #   laravel: 9 # Failed security advisory
+          - php: '8.0'
+            laravel: 9 # Failed security advisory
           - php: '8.0'
             laravel: 10
           - php: '8.0'
