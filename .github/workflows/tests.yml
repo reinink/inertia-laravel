@@ -24,9 +24,9 @@ jobs:
             stability: "prefer-stable"
         exclude:
           - php: 7.3
-            laravel: 8
+            laravel: 8 # Failed security advisory
           - php: 7.3
-            laravel: 9 # Failed security advisory
+            laravel: 9
           - php: 7.3
             laravel: 10
           - php: 7.3
