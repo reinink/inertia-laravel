@@ -99,7 +99,7 @@ jobs:
           max_attempts: 5
           command: |
             composer require nesbot/carbon:^2.62.1 --dev --${{ matrix.stability }} --no-update --no-interaction
-        if: matrix.php >= 8.2 && matrix.stability == 'prefer-lowest'
+        if: matrix.php >= 8.2 && matrix.stability == 'prefer-lowest' && matrix.laravel < 12
 
       - name: Set Minimum PHP 8.2 Versions and Laravel > 11
         uses: nick-fields/retry@v3
