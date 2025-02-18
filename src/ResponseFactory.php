@@ -2,6 +2,7 @@
 
 namespace Inertia;
 
+use BackedEnum;
 use Closure;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
@@ -13,6 +14,7 @@ use Illuminate\Support\Traits\Macroable;
 use Inertia\Support\Header;
 use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirect;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use InvalidArgumentException;
 
 class ResponseFactory
 {
@@ -130,11 +132,12 @@ class ResponseFactory
         return new AlwaysProp($value);
     }
 
-    /**
-     * @param  array|Arrayable  $props
-     */
-    public function render(string $component, $props = []): Response
+    public function render(BackedEnum|string $component, array|Arrayable $props = []): Response
     {
+        if ($component instanceof BackedEnum && ! is_string($component = $component->value)) {
+            throw new InvalidArgumentException('Enum must be string backed.');
+        }
+
         if ($props instanceof Arrayable) {
             $props = $props->toArray();
         }
